@@ -1,0 +1,15 @@
+/Users/randycostner/Projects/StarChallenge/StarChallenge/bin/Debug/net6.0/StarChallenge
+/Users/randycostner/Projects/StarChallenge/StarChallenge/bin/Debug/net6.0/StarChallenge.deps.json
+/Users/randycostner/Projects/StarChallenge/StarChallenge/bin/Debug/net6.0/StarChallenge.runtimeconfig.json
+/Users/randycostner/Projects/StarChallenge/StarChallenge/bin/Debug/net6.0/StarChallenge.dll
+/Users/randycostner/Projects/StarChallenge/StarChallenge/bin/Debug/net6.0/StarChallenge.pdb
+/Users/randycostner/Projects/StarChallenge/StarChallenge/obj/Debug/net6.0/StarChallenge.csproj.AssemblyReference.cache
+/Users/randycostner/Projects/StarChallenge/StarChallenge/obj/Debug/net6.0/StarChallenge.GeneratedMSBuildEditorConfig.editorconfig
+/Users/randycostner/Projects/StarChallenge/StarChallenge/obj/Debug/net6.0/StarChallenge.AssemblyInfoInputs.cache
+/Users/randycostner/Projects/StarChallenge/StarChallenge/obj/Debug/net6.0/StarChallenge.AssemblyInfo.cs
+/Users/randycostner/Projects/StarChallenge/StarChallenge/obj/Debug/net6.0/StarChallenge.csproj.CoreCompileInputs.cache
+/Users/randycostner/Projects/StarChallenge/StarChallenge/obj/Debug/net6.0/StarChallenge.dll
+/Users/randycostner/Projects/StarChallenge/StarChallenge/obj/Debug/net6.0/refint/StarChallenge.dll
+/Users/randycostner/Projects/StarChallenge/StarChallenge/obj/Debug/net6.0/StarChallenge.pdb
+/Users/randycostner/Projects/StarChallenge/StarChallenge/obj/Debug/net6.0/StarChallenge.genruntimeconfig.cache
+/Users/randycostner/Projects/StarChallenge/StarChallenge/obj/Debug/net6.0/ref/StarChallenge.dll
