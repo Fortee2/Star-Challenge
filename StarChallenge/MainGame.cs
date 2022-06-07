@@ -5,7 +5,9 @@ namespace StarChallenge
 {
 	public class MainGame
 	{
-		private int[] C = new int[5];
+		//Think the orignal arrays are base 1
+		//May need to bump these up to 6 or sub one off of the index
+		private int[] C = new int[5]; //Think this is an array of alien ships
 		private int[] H = new int[5];
 		private int[] D = new int[5];
 		private int[] F = new int[5];
@@ -22,17 +24,19 @@ namespace StarChallenge
 		private string dr = ", DAMAGE REPORT"; //D$
 		private string hepb = "HIGH ENERGY PLASMA BOLT"; //H$
 		private string dam = "DAMAGED"; // G$
-		
-		private float P3 = 1.5f;
+
+		//Don't Know yet
+		private float P = 0,  P3 = 1.5f;//P = Power?
 		private int R1 = 1;
-		private int S = 0, M =0, D1= 0, N2 =0, P=0, C1=0;
+		private int S = 0, M =0, D1= 0, N2 =0,  C1=0, H1=0; 
 		private int CINT = 0; //C
+		private int RINT = 0; //R
 		private int Q = new Random(0).Next();
 
+		//Converted
 		private int commandOption = 0; //M1
 		private int shipToAttack = 0; //K
-
-		private int numberOfKlingons = 0; //N1
+		private int numberOfAliens = 0; //N1
 
 		public MainGame()
 		{
@@ -99,22 +103,22 @@ namespace StarChallenge
 		{
 			PromptForNumberofEnemies();
 
-			if(numberOfKlingons > 0 ) // GOTO 121
+			if(numberOfAliens > 0 ) // GOTO 121
             {
-				if(numberOfKlingons < 6 ) //GOTO 129
+				if(numberOfAliens < 6 ) //GOTO 129
                 {
-					if(numberOfKlingons == 1) //Line 129
+					if(numberOfAliens == 1) //Line 129
                     {
 						//GOTO 139
-						WriteLine(String.Format("{0} {1}", numberOfKlingons, alienName)); //Line 139
+						WriteLine(String.Format("{0} {1}", numberOfAliens, alienName)); //Line 139
 						H[1] = -3;
 						//GOTO 143
 					}
 
-					if(numberOfKlingons > 2)//Line 131
+					if(numberOfAliens > 2)//Line 131
                     {
 					
-						WriteLine(String.Format("{0} {1}S", numberOfKlingons, alienName)); //Line 135
+						WriteLine(String.Format("{0} {1}S", numberOfAliens, alienName)); //Line 135
 						//GOTO 143
 					}
 
@@ -122,7 +126,7 @@ namespace StarChallenge
                 }
 
 				WriteLine(String.Format("THE {0}S ONLY HAVE 5 BATTLE CRUSIERS IN THIS QUADRANT", alienName));
-				numberOfKlingons = 5;
+				numberOfAliens = 5;
 				//GOTO 143
 
             }
@@ -138,17 +142,17 @@ namespace StarChallenge
 
 				if (count != null && int.TryParse(count, out test))
 				{
-					numberOfKlingons = Math.Abs(test);
+					numberOfAliens = Math.Abs(test);
 				}
 
-			} while (numberOfKlingons == 0 );
+			} while (numberOfAliens == 0 );
 		}
 
 		private void Function143()
         {
 			WriteLine("COMING INTO RANGE - SHIELDS ON", 1);
 
-			for(int i = 1; i<= numberOfKlingons; i++)
+			for(int i = 1; i<= numberOfAliens; i++)
             {
 				R[i] = 40000 + (new Random(1).Next() * 20000);
 				A[i] = 360 * new Random(1).Next();
@@ -164,13 +168,13 @@ namespace StarChallenge
 			function377();
         }
 
-		private void function165()
+		private void PromptForUserInput() // Line 167
         {
 			string? firingSolutions = "";
 
 			do
 			{
-				WriteLine(String.Format("YOUR MOVE? DIRECTED AT {0}", alienName));
+				WriteLine(String.Format("YOUR MOVE? DIRECTED AT {0}", alienName));  
 				WriteLine(String.Format("ENTER COMMAND OPTION, SHIP NUMBER"));
 
 				firingSolutions = Console.ReadLine();
@@ -183,26 +187,115 @@ namespace StarChallenge
 					&& !int.TryParse(commands[1], out shipToAttack)
 					&& !int.TryParse(commands[0], out commandOption)
 				)
-                {
+				{
 					firingSolutions = String.Empty;
 				}
 
 
-			} while (firingSolutions == "");
+			} while (!ValidUserCommand());
 
-			if(commandOption > 0)
+            switch (commandOption) //Line 187
             {
-				function181();
-				return;
+				case 14:
+					break;
+				case 15:
+					break;
+				case 16:
+					break;
+				default:
+					executeCommand();
+					break;
+            }
+		}
+
+        private void executeCommand()  //Line 189
+        {
+			bool commandSuceeded = false;
+
+            switch (commandOption)
+            {
+				case 1:
+				case 2:
+					commandSuceeded = firePhasers();
+					break;
             }
 
-			function975();
-			function537();
+			//TODO: Translate the rest of command
+
+            if (!commandSuceeded)
+            {
+				PromptForUserInput();
+            }
+        }
+
+        private bool firePhasers() //Line 231
+        {
+            if (C[shipToAttack] == 1)
+            {
+				MoveImpossible();
+				return false;
+            }
+
+
+
+			function233();
+			return true;
+        }
+
+        private void MoveImpossible()
+        {
+			WriteLine("MOVE IMPOSSIBLE.  Try Again.",1);
+        }
+
+        private bool ValidUserCommand()
+        {
+			commandOption = Math.Abs(commandOption);
+			shipToAttack = Math.Abs(shipToAttack);
+
+			if(commandOption > 16 || shipToAttack > numberOfAliens) //line 181 - 183
+            {
+				MoveImpossible();
+				return false;
+            }
+
+			return true;
         }
 
 		private void function181()
         {
 			throw new NotImplementedException();
+		}
+
+		private void function233()
+        {
+			switch (commandOption) //Line 233
+			{
+				case 1:  //Line 235
+                    if (R[shipToAttack] > 300000)
+                    {
+						MoveImpossible();
+						return;
+                    }
+
+                    if (A[shipToAttack] < 180)
+                    {
+						MoveImpossible();
+						return;
+                    }
+
+					if(H1 >= 8)
+                    {
+						MoveImpossible();
+						return;
+                    }
+
+					float N3 = 2 / commandOption;
+					P = P + N3;
+					function975();
+					break;
+			}
+
+			//TODO: Map remaining items
 		}
 
 		private void function373()
@@ -235,20 +328,66 @@ namespace StarChallenge
 				return;
             }
 
-			function165();
+			do  //Line 165
+			{
+				PromptForUserInput();
+			} while (!ValidUserCommand());
+
+			function975();  
+			function537();  
+		}
+
+		private void SecondaryCircuitOverload()
+		{
+			WriteLine("SECONDARY DILITHIUM CIRCUIT FUSED");
+			WriteLine("IMPLUSE POWER ONLY - LIMIT 2 MILLION STROMS");
+			WriteLine("WARNING - IF CAPACITY OF IMPULSE ENGINE EXCEEDED IT,");
+			WriteLine("EXPLODE ", 1);
+
+			C1 = 2; // LINE 433
+
+			function443();
+		}
+
+		private void PrimaryCircuitOverload() //Line 437
+		{
+			WriteLine("PRIMARY DILITHIUM CIRCUIT FUSED, SWITCHING TO SECONDARY");
+			WriteLine("OVERLOAD CAPACITY FOR THIS CIRCUIT IS 10 MILLION STROMS", 1);
+			C1 = 1; // LINE 441
+
+			function443();
+		}
+
+		private void function443()
+        {
+			P = 0;
+			if (commandOption == 5) //Fire Plasma Bolt
+			{
+				function457();
+				return;
+			}
+
+			if (commandOption == 3)
+			{ //Fire Front Phaser
+				function453();
+				return;
+			}
+
+			RINT = RINT - N2;
+			PromptForUserInput();
+		}
+
+        private void function453()
+        {
+            throw new NotImplementedException();
         }
 
-		private void function425()
-		{
-			throw new NotImplementedException();
-		}
+        private void function457()
+        {
+            throw new NotImplementedException();
+        }
 
-		private void function437()
-		{
-			throw new NotImplementedException();
-		}
-
-		private void function537()
+        private void function537()
         {
 			throw new NotImplementedException();
 		}
@@ -259,27 +398,19 @@ namespace StarChallenge
             {
 				P = P + 3;
 
-				if(P <= 20) { function983(); }
-				else if (C1 == 0) { function437(); }
-				else if (P <= 10) { function987(); }
-				else if (C1 == 1) { function425(); }
-				else if (P <= 2) { function991(); }
+				if(P <= 2) { return; }  // Line 979
+				else if (C1 == 0) { PrimaryCircuitOverload(); }
+				else if (C1 == 1) { SecondaryCircuitOverload(); }
 				else if (C1 ==2 ) { function909(); }
 				return;
             }
 
-			function979();
         }
 
         private void function909()
         {
             throw new NotImplementedException();
         }
-
-		private void function979()
-		{
-			throw new NotImplementedException();
-		}
 
 		private void function983()
 		{
