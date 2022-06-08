@@ -31,6 +31,7 @@ namespace StarChallenge
 		private int S = 0, M =0, D1= 0, N2 =0,  C1=0, H1=0; 
 		private int CINT = 0; //C
 		private int RINT = 0; //R
+		private int DInt = 0; //D
 		private int Q = new Random(0).Next();
 
 		//Converted
@@ -105,29 +106,18 @@ namespace StarChallenge
 
 			if(numberOfAliens > 0 ) // GOTO 121
             {
-				if(numberOfAliens < 6 ) //GOTO 129
-                {
-					if(numberOfAliens == 1) //Line 129
-                    {
-						//GOTO 139
-						WriteLine(String.Format("{0} {1}", numberOfAliens, alienName)); //Line 139
-						H[1] = -3;
-						//GOTO 143
-					}
+				if (numberOfAliens < 6)//Line 131
+				{
+					WriteLine(String.Format("{0} {1}{2}", numberOfAliens, alienName, numberOfAliens ==1? "S": " ")); //Line 135
+					if(numberOfAliens == 1) { H[1] = -3; }
+				}
+				else
+				{
+					WriteLine(String.Format("THE {0}S ONLY HAVE 5 BATTLE CRUSIERS IN THIS QUADRANT", alienName));
+					numberOfAliens = 5;
+				}
 
-					if(numberOfAliens > 2)//Line 131
-                    {
-					
-						WriteLine(String.Format("{0} {1}S", numberOfAliens, alienName)); //Line 135
-						//GOTO 143
-					}
-
-					return;
-                }
-
-				WriteLine(String.Format("THE {0}S ONLY HAVE 5 BATTLE CRUSIERS IN THIS QUADRANT", alienName));
-				numberOfAliens = 5;
-				//GOTO 143
+				Function143();
 
             }
 		}
@@ -183,9 +173,9 @@ namespace StarChallenge
 
 				string[] commands = firingSolutions.Split(",");
 
-				if (commands.GetLength(0) != 2
-					&& !int.TryParse(commands[1], out shipToAttack)
-					&& !int.TryParse(commands[0], out commandOption)
+				if (commands.GetLength(0) == 2
+					&& int.TryParse(commands[1], out shipToAttack)
+					&& int.TryParse(commands[0], out commandOption)
 				)
 				{
 					firingSolutions = String.Empty;
@@ -260,6 +250,11 @@ namespace StarChallenge
 
 			return true;
         }
+
+		private void function143()
+        {
+			throw new NotImplementedException();
+		}
 
 		private void function181()
         {
@@ -389,10 +384,44 @@ namespace StarChallenge
 
         private void function537()
         {
-			throw new NotImplementedException();
+			if(H1 >= 9)
+            {
+				P = P - P3 - 0.5f;
+            }
+            else
+            {
+
+				P = P - P3;
+			}
+
+			function545();
 		}
 
-		private void function975()
+        private void function545()
+        {
+            if(DInt > 4 || P3 == 2.5)
+            {
+				function605();
+				return;
+            }
+
+			for(int i =0 ; i < R1; i++)
+            {
+				//TODO:  This runs from line 549 to 603
+            }
+        }
+
+        private void function605()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void function543()
+        {
+			
+		}
+
+        private void function975()
         {
 			if(CINT == 1)
             {
