@@ -1,4 +1,5 @@
-﻿using System;
+﻿// See https://aka.ms/new-console-template for more information
+using System;
 using System.Text;
 
 namespace StarChallenge
@@ -7,13 +8,13 @@ namespace StarChallenge
 	{
 		//Think the orignal arrays are base 1
 		//May need to bump these up to 6 or sub one off of the index
-		private int[] C = new int[5]; //Think this is an array of alien ships
-		private int[] H = new int[5];
-		private int[] D = new int[5];
-		private int[] F = new int[5];
-		private int[] R = new int[5];
-		private int[] T = new int[5];
-		private int[] A = new int[5];
+		private int[] C = new int[6]; //Think this is an array of alien ships
+		private int[] H = new int[6];
+		private int[] D = new int[6];
+		private int[] F = new int[6];
+		private int[] R = new int[6];
+		private int[] T = new int[6];
+		private int[] A = new int[6];
 
 		//Messages
 		private string pb = "PHASER BANKS"; //B$,
@@ -26,12 +27,13 @@ namespace StarChallenge
 		private string dam = "DAMAGED"; // G$
 
 		//Don't Know yet
-		private float P = 0,  P3 = 1.5f;//P = Power?
+		private float P = 0,  P3 = 1.5f, H1 = 0;//P = Power?
 		private int R1 = 1;
-		private int S = 0, M =0, D1= 0, N2 =0,  C1=0, H1=0; 
+		private int S = 0, M =0, D1= 0, N2 =0,  C1=0; 
 		private int CINT = 0; //C
 		private int RINT = 0; //R
 		private int DInt = 0; //D
+		private int FInt = 0; //F
 		private int Q = new Random(0).Next();
 
 		//Converted
@@ -39,7 +41,9 @@ namespace StarChallenge
 		private int shipToAttack = 0; //K
 		private int numberOfAliens = 0; //N1
 
-		public MainGame()
+        public int D2 { get; private set; }
+
+        public MainGame()
 		{
 		}
 
@@ -128,7 +132,7 @@ namespace StarChallenge
 			{
 				WriteLine("HOW MANY KLINGONS DO YOU WANT TO TAKE ON?", 1);
 				string? count = Console.ReadLine();
-				int test = 0;
+				int test;
 
 				if (count != null && int.TryParse(count, out test))
 				{
@@ -144,8 +148,8 @@ namespace StarChallenge
 
 			for(int i = 1; i<= numberOfAliens; i++)
             {
-				R[i] = 40000 + (new Random(1).Next() * 20000);
-				A[i] = 360 * new Random(1).Next();
+				R[i] = 40000 + (int) (new Random(1).Next(1,20001));
+				A[i] = (int) new Random(1).Next(1, 361); //360 * new Random(1).Next();
 
 				WriteLine(String.Format("RANGE OF {0}-{1} = {2} KM.AT {3} DEGREES", alienName, i, R[i], A[i]));
             }
@@ -160,7 +164,7 @@ namespace StarChallenge
 
 		private void PromptForUserInput() // Line 167
         {
-			string? firingSolutions = "";
+			string? firingSolutions;
 
 			do
 			{
@@ -169,20 +173,7 @@ namespace StarChallenge
 
 				firingSolutions = Console.ReadLine();
 
-				firingSolutions = (firingSolutions == null) ? "" : firingSolutions;
-
-				string[] commands = firingSolutions.Split(",");
-
-				if (commands.GetLength(0) == 2
-					&& int.TryParse(commands[1], out shipToAttack)
-					&& int.TryParse(commands[0], out commandOption)
-				)
-				{
-					firingSolutions = String.Empty;
-				}
-
-
-			} while (!ValidUserCommand());
+			} while (!ValidUserCommand(firingSolutions));
 
             switch (commandOption) //Line 187
             {
@@ -226,8 +217,6 @@ namespace StarChallenge
 				return false;
             }
 
-
-
 			function233();
 			return true;
         }
@@ -237,8 +226,19 @@ namespace StarChallenge
 			WriteLine("MOVE IMPOSSIBLE.  Try Again.",1);
         }
 
-        private bool ValidUserCommand()
+        private bool ValidUserCommand(string? userInput)
         {
+			userInput = (userInput == null) ? "" : userInput;
+
+			string[] commands = userInput.Split(",");
+
+			if (commands.GetLength(0) != 2
+				|| !int.TryParse(commands[1], out shipToAttack)
+				|| !int.TryParse(commands[0], out commandOption))
+			{
+				return false;
+			}
+
 			commandOption = Math.Abs(commandOption);
 			shipToAttack = Math.Abs(shipToAttack);
 
@@ -272,7 +272,7 @@ namespace StarChallenge
 						return;
                     }
 
-                    if (A[shipToAttack] < 180)
+                    if (A[shipToAttack] > 180)
                     {
 						MoveImpossible();
 						return;
@@ -323,10 +323,7 @@ namespace StarChallenge
 				return;
             }
 
-			do  //Line 165
-			{
-				PromptForUserInput();
-			} while (!ValidUserCommand());
+			PromptForUserInput(); //Line 165
 
 			function975();  
 			function537();  
@@ -394,10 +391,10 @@ namespace StarChallenge
 				P = P - P3;
 			}
 
-			function545();
+			TestForRepairs();
 		}
 
-        private void function545()
+        private void TestForRepairs() //Line 545
         {
             if(DInt > 4 || P3 == 2.5)
             {
@@ -405,20 +402,132 @@ namespace StarChallenge
 				return;
             }
 
-			for(int i =0 ; i < R1; i++)
+			float Z1;
+
+			for (int i = 0; i < R1; i++)
+			{
+				Z1 = H1 - .5f;
+
+				if (Z1 > -1)//Line553
+				{
+					H1 = Z1;
+                }
+                else
+                {
+					H1 = -1;
+					//Line 561
+                }
+
+				if(H1== 9.5)
+                {
+					if(C1 != 2)
+                    {
+						WriteLine(String.Format("{0} WARP ENGINES REPAIRED", eng),1);
+                    }
+                }
+
+				EvaluateH1();
+			}
+
+			function605();
+        }
+
+		private void EvaluateH1()
+        {
+            switch (H1)
             {
-				//TODO:  This runs from line 549 to 603
+				case 8.5f:
+                    if (FInt < 20) {
+						WriteLine(String.Format("{0} {1} PROJECTORS REPAIRED", eng,pt), 1);
+					}
+
+					if (RINT >= 10)
+					{
+						WriteLine(String.Format("{0} NORMAL POWERS LEVELS RESTORED", eng), 1);
+					}
+                    else
+                    {
+						WriteLine(String.Format("{0} {1} PROJECTORS REPAIRED", eng, pt), 1);
+					}
+
+					break;
+				case 7.5f:
+						WriteLine(String.Format("{0} {1} REPAIRED", eng, pb), 1);
+					break;
+				case 6.5f:
+						WriteLine(String.Format("{0} SHEILDS RESTORED AT LOW POWER LEVEL", eng), 1);
+					break;
+				case 4.5f:
+						WriteLine(String.Format("{0} SHEILDS FIRMING UP", eng), 1);
+					break;
             }
         }
 
+		private void function725()
+        {
+			if (DInt < 4 || DInt > 9)
+			{
+				return;
+			}
+
+			DInt = 10;
+			WriteLine(String.Format("FURTHER REPAIRS IMPOSSIBLE"));
+		}
+
         private void function605()
         {
-            throw new NotImplementedException();
-        }
+			for (int k = 1; k < numberOfAliens; k++)
+			{
+				if (C[k] == 1)
+				{
+					D1 = +1;
+					function725();
+					continue;
+				}
+
+				if (CINT == 0)
+				{
+					if (R[k] <= 500000)
+					{
+						if (R[k] >= 100000)
+						{
+							if (R[k] >= 20000)
+							{
+								if (H[k] < 6)
+								{
+									R[k] = R[k] / 2;
+									WriteLine(String.Format("{0} {1} APPROACHING", alienName, k));
+									function725();
+								}
+							}
+						}
+					}
+				}
+
+				if (commandOption == 0)
+				{
+					WriteLine(String.Format("{0} {1} DOING NOTHING", alienName, k));
+					continue;
+				}
+
+				if (H[k] > 5 || F[k] > 2)
+                {
+                    if (H[k] >= 7)
+                    {
+
+                    }
+
+
+                }
+
+            }
+
+			throw new NotImplementedException();
+		}
 
         private void function543()
         {
-			
+			throw new NotImplementedException();
 		}
 
         private void function975()
@@ -430,18 +539,58 @@ namespace StarChallenge
 				if(P <= 2) { return; }  // Line 979
 				else if (C1 == 0) { PrimaryCircuitOverload(); }
 				else if (C1 == 1) { SecondaryCircuitOverload(); }
-				else if (C1 ==2 ) { function909(); }
+				else if (C1 == 2 ) { ImpluseOverload(); }
 				return;
             }
 
         }
 
-        private void function909()
+        private void ImpluseOverload() //Line 909
+        {
+			WriteLine("IMPULSE ENGINE OVERLOAD", 1);
+
+			function877();
+		}
+
+        private void function877()
+        {
+			R1 = 9800 * new Random().Next() + 200;
+			WriteLine(String.Format("RADIUS OF EXPLOSION = {0} KM", R1), 1);
+
+			for(int i = 1; i < numberOfAliens + 1; i++)
+            {
+                if (C[i]==1 || R[i] > R1)
+                {
+					continue;
+                }
+
+				if(R1 > R1 * .8)
+                {
+					H[i] = H[i] + 6;
+                    if (H[i] < 8)
+                    {
+						F[i] = F[i] + 1;
+						WriteLine(string.Format("{0} {1} HEAVILY {2}", alienName, i, dam), 1);
+						continue;
+                    }
+                }
+
+				WriteLine(String.Format("{0} {1} DESTROYED", alienName, i));
+
+				C[i] = 1;
+            }
+
+			D2 = 1;
+
+			function993();
+		}
+
+        private void function993()
         {
             throw new NotImplementedException();
         }
 
-		private void function983()
+        private void function983()
 		{
 			throw new NotImplementedException();
 		}
