@@ -8,12 +8,12 @@ namespace StarChallenge
 	{
 		//Think the orignal arrays are base 1
 		//May need to bump these up to 6 or sub one off of the index
-		private int[] C = new int[6]; //Think this is an array of alien ships
+		private int[] C = new int[6]; //ATTACK SHIPS
 		private int[] H = new int[6];
 		private int[] D = new int[6];
 		private int[] F = new int[6];
 		private int[] R = new int[6];
-		private int[] T = new int[6];
+		private int[] T = new int[6]; //ENEMY PHASER BANK
 		private int[] A = new int[6];
 
 		//Messages
@@ -27,7 +27,7 @@ namespace StarChallenge
 		private string dam = "DAMAGED"; // G$
 
 		//Don't Know yet
-		private float P = 0,  P3 = 1.5f, H1 = 0;//P = Power?
+		private float P = 0,  P3 = 1.5f, H1 = 0;//P = Power? H1 = Hits on the Enterprise
 		private int R1 = 1;
 		private int S = 0, M =0, D1= 0, N2 =0,  C1=0; 
 		private int CINT = 0; //C
@@ -148,8 +148,8 @@ namespace StarChallenge
 
 			for(int i = 1; i<= numberOfAliens; i++)
             {
-				R[i] = 40000 + (int) (new Random(1).Next(1,20001));
-				A[i] = (int) new Random(1).Next(1, 361); //360 * new Random(1).Next();
+				R[i] = 40000 + (int) (new Random().Next(1,20001));
+				A[i] = (int) new Random().Next(1, 361); //360 * new Random(1).Next();
 
 				WriteLine(String.Format("RANGE OF {0}-{1} = {2} KM.AT {3} DEGREES", alienName, i, R[i], A[i]));
             }
@@ -471,7 +471,7 @@ namespace StarChallenge
 			}
 
 			DInt = 10;
-			WriteLine(String.Format("FURTHER REPAIRS IMPOSSIBLE"));
+			WriteLine(String.Format("{0} FURTHER REPAIRS IMPOSSIBLE" , eng));
 		}
 
         private void function605()
@@ -498,6 +498,7 @@ namespace StarChallenge
 									R[k] = R[k] / 2;
 									WriteLine(String.Format("{0} {1} APPROACHING", alienName, k));
 									function725();
+									continue;
 								}
 							}
 						}
@@ -514,20 +515,204 @@ namespace StarChallenge
                 {
                     if (H[k] >= 7)
                     {
+						R[k] = R[k] + 100000 + (int) (new Random().NextDouble() * 50000);
+						WriteLine(String.Format("{0} {1} ATTEMPTING TO BREAK CONTACT", alienName, k));
+						if (new Random().NextDouble() > 0.6)
+                        {
+							function725();
+							continue;
+                        }
 
-                    }
+						WriteLine(String.Format("{0} {1} OUT OF SENSOR RANGE- CONTACT BROKEN", alienName, k));
+					}
 
+					C[k] = D[k] = 1;
+					D1 = D1 + 1;
+					function725();
+					continue;
 
                 }
 
-            }
+				if (R[k] <= 50000)
+				{
+					if (new Random().NextDouble() > 0.6)
+					{
+						if (R[k] >= 20000)
+						{
+							function637();
+							continue;
+						}
+					}
+				}
 
-			throw new NotImplementedException();
+                if(numberOfAliens > 2)
+                {
+					WriteLine(String.Format("{0} {1} FIRES PHASERS AT ENTERPRISE", alienName, k));
+
+					if (!function803())
+					{
+						break;
+					}
+
+					continue;
+                }
+
+				if (new Random().NextDouble() < .4)
+				{
+					function637();
+					continue;
+				}
+
+				T[k] = T[k] + 1;
+
+                if (T[k] == 10)
+                {
+					function719(k);
+					continue;
+                }
+
+				WriteLine(String.Format("{0} {1} FIRES {2}", alienName, k, pb));
+
+                if (!function803())
+                {
+					break;
+                }
+			}
 		}
 
-        private void function543()
+        private bool function803()
         {
-			throw new NotImplementedException();
+			Double B = new Random().NextDouble();
+
+			if (B > .3)
+			{
+				if (commandOption > 0)
+				{
+					WriteLine("YOU OUTMANEUVERED ATTACKER, MISS");
+					function725();
+					return true;
+				}
+				else
+				{
+					WriteLine("NEAR MISS");
+					function725();
+					return true;
+				}
+			}
+			else
+			{
+				WriteLine("HIT TAKEN ON ENTERPRISE");
+				H1 = H1 + 1;
+
+				if (ShipDestroyed())
+				{
+					function993();
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+        private void function719(int shipNumber)
+        {
+			WriteLine(String.Format("{0} {1} FIRES ITS LAST {2}", alienName, shipNumber, pb));
+		}
+
+        private void function637()
+        {
+			if (H[k] < 6)
+			{
+				R[k] = R[k] / 2;
+				WriteLine(String.Format("{0} {1} APPROACHING", alienName, k));
+				function725();
+				return;
+			}
+
+			if (T[k] == 10)
+			{
+				function719(k);
+				return;
+			}
+
+			R[k] = R[k] / 2;
+			WriteLine(String.Format("{0} {1} APPROACHING", alienName, k));
+			function725();
+			return;
+		}
+
+        private bool ShipDestroyed()
+        {
+            if(H1 >= 11)
+            {
+				WriteLine("USS ENTERPRISE DESTROYED");
+				D2 = 1;
+				return true;
+			}
+            else if (H1 < 5 )
+            {
+				WriteLine("SHIELDS HOLDING, NO DAMAGE");
+				function725();
+			}
+
+            switch (H1 - 4)
+            {
+				case 1:
+				case 2:
+					function847();
+					break;
+				case 3:
+					function851();
+					break;
+				case 4:
+					function855();
+					break;
+				case 5:
+					function859();
+					break;
+				case 6:
+					function865();
+					break;
+				case 7:
+					function869();
+					break;
+            }
+
+			return false;
+        }
+
+        private void function869()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void function865()
+        {
+			WriteLine("WARP POWER OFFLINE");
+			function859();
+		}
+
+        private void function859()
+        {
+			WriteLine("WEAPONS AND SHIELDS DEACTIVATED");
+			WriteLine("SHIPS POWER DROPPING" ,1);
+			function725();
+		}
+
+        private void function855()
+        {
+			WriteLine(String.Format("{0) DEACTIVATED ", pb));
+			function851();
+		}
+
+        private void function851()
+        {
+			WriteLine("SHIELDS OFFLINE",	1);
+		}
+
+        private void function847()
+        {
+			WriteLine("SHIELDS WEAKENING",1);
 		}
 
         private void function975()
