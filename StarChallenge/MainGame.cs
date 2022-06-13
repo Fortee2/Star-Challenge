@@ -8,7 +8,7 @@ namespace StarChallenge
 	{
 		//Think the orignal arrays are base 1
 		//May need to bump these up to 6 or sub one off of the index
-		private int[] C = new int[6]; //ATTACK SHIPS
+		private int[] C = new int[6]; //ATTACKING SHIPS
 		private int[] H = new int[6];
 		private int[] D = new int[6];
 		private int[] F = new int[6];
@@ -27,7 +27,7 @@ namespace StarChallenge
 		private string dam = "DAMAGED"; // G$
 
 		//Don't Know yet
-		private float P = 0,  P3 = 1.5f, H1 = 0;//P = Power? H1 = Hits on the Enterprise
+		private float P = 0,  P3 = 1.5f;//P = Power? 
 		private int R1 = 1;
 		private int S = 0, M =0, D1= 0, N2 =0,  C1=0; 
 		private int CINT = 0; //C
@@ -40,6 +40,7 @@ namespace StarChallenge
 		private int commandOption = 0; //M1
 		private int shipToAttack = 0; //K
 		private int numberOfAliens = 0; //N1
+		private float hitsTaken = 0; //hitsTaken
 
         public int D2 { get; private set; }
 
@@ -96,6 +97,12 @@ namespace StarChallenge
 						SetNumberOfEnemies();
 						break;
                 }
+
+				//Control loop
+				do
+				{
+					PromptForUserInput();
+				} while (hitsTaken < 11);
 			}
 		}
 
@@ -121,9 +128,9 @@ namespace StarChallenge
 					numberOfAliens = 5;
 				}
 
-				Function143();
 
-            }
+				Function143();
+			}
 		}
 
 		private void PromptForNumberofEnemies() //Line 109
@@ -175,18 +182,8 @@ namespace StarChallenge
 
 			} while (!ValidUserCommand(firingSolutions));
 
-            switch (commandOption) //Line 187
-            {
-				case 14:
-					break;
-				case 15:
-					break;
-				case 16:
-					break;
-				default:
-					executeCommand();
-					break;
-            }
+       
+			executeCommand();
 		}
 
         private void executeCommand()  //Line 189
@@ -199,14 +196,84 @@ namespace StarChallenge
 				case 2:
 					commandSuceeded = firePhasers();
 					break;
+				case 3:
+					function191();
+					break;
+				case 4:
+					function197();
+					break;
+				case 5:
+				case 8:
+					function231();
+					break;
+				case 6:
+				case 7:
+				case 9:
+				case 10:
+				case 11:
+					function233();
+					break;
+				case 12:
+					function341();
+					break;
+				case 13:
+					function349();
+					break;
+				case 14:   //Line 187
+					function363();
+					break;
+				case 15:
+					function371();
+					break;
+				case 16:
+					function159();
+					break;
             }
-
-			//TODO: Translate the rest of command
 
             if (!commandSuceeded)
             {
 				PromptForUserInput();
             }
+        }
+
+        private void function159()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void function371()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void function363()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void function349()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void function341()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void function231()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void function197()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void function191()
+        {
+            throw new NotImplementedException();
         }
 
         private bool firePhasers() //Line 231
@@ -278,7 +345,7 @@ namespace StarChallenge
 						return;
                     }
 
-					if(H1 >= 8)
+					if(hitsTaken >= 8)
                     {
 						MoveImpossible();
 						return;
@@ -288,12 +355,93 @@ namespace StarChallenge
 					P = P + N3;
 					function975();
 					break;
+				case 2:
+					function251();
+					break;
+				case 3:
+					function257();
+					break;
+				case 4:
+					function267();
+					break;
+				case 5:
+					function273();
+					break;
+				case 6:
+					function875();
+					break;
+				case 7:
+					function913();
+					break;
+				case 8:
+					function965();
+					break;
+				case 9:
+					function961();
+					break;
+				case 10:
+					function309();
+					break;
+				case 11:
+					function333();
+					break;
+
 			}
 
 			//TODO: Map remaining items
 		}
 
-		private void function373()
+        private void function333()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void function267()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void function273()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void function875()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void function913()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void function965()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void function961()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void function309()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void function257()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void function251()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void function373()
         {
 			throw new NotImplementedException();
 		}
@@ -381,7 +529,7 @@ namespace StarChallenge
 
         private void function537()
         {
-			if(H1 >= 9)
+			if(hitsTaken >= 9)
             {
 				P = P - P3 - 0.5f;
             }
@@ -406,19 +554,19 @@ namespace StarChallenge
 
 			for (int i = 0; i < R1; i++)
 			{
-				Z1 = H1 - .5f;
+				Z1 = hitsTaken - .5f;
 
 				if (Z1 > -1)//Line553
 				{
-					H1 = Z1;
+					hitsTaken = Z1;
                 }
                 else
                 {
-					H1 = -1;
+					hitsTaken = -1;
 					//Line 561
                 }
 
-				if(H1== 9.5)
+				if(hitsTaken== 9.5)
                 {
 					if(C1 != 2)
                     {
@@ -426,15 +574,15 @@ namespace StarChallenge
                     }
                 }
 
-				EvaluateH1();
+				EvaluatehitsTaken();
 			}
 
 			function605();
         }
 
-		private void EvaluateH1()
+		private void EvaluatehitsTaken()
         {
-            switch (H1)
+            switch (hitsTaken)
             {
 				case 8.5f:
                     if (FInt < 20) {
@@ -476,9 +624,9 @@ namespace StarChallenge
 
         private void function605()
         {
-			for (int k = 1; k < numberOfAliens; k++)
+			for (int alien = 1; alien < numberOfAliens; alien++)
 			{
-				if (C[k] == 1)
+				if (C[alien] == 1)
 				{
 					D1 = +1;
 					function725();
@@ -487,16 +635,16 @@ namespace StarChallenge
 
 				if (CINT == 0)
 				{
-					if (R[k] <= 500000)
+					if (R[alien] <= 500000)
 					{
-						if (R[k] >= 100000)
+						if (R[alien] >= 100000)
 						{
-							if (R[k] >= 20000)
+							if (R[alien] >= 20000)
 							{
-								if (H[k] < 6)
+								if (H[alien] < 6)
 								{
-									R[k] = R[k] / 2;
-									WriteLine(String.Format("{0} {1} APPROACHING", alienName, k));
+									R[alien] = R[alien] / 2;
+									WriteLine(String.Format("{0} {1} APPROACHING", alienName, alien));
 									function725();
 									continue;
 								}
@@ -507,39 +655,39 @@ namespace StarChallenge
 
 				if (commandOption == 0)
 				{
-					WriteLine(String.Format("{0} {1} DOING NOTHING", alienName, k));
+					WriteLine(String.Format("{0} {1} DOING NOTHING", alienName, alien));
 					continue;
 				}
 
-				if (H[k] > 5 || F[k] > 2)
+				if (H[alien] > 5 || F[alien] > 2)
                 {
-                    if (H[k] >= 7)
+                    if (H[alien] >= 7)
                     {
-						R[k] = R[k] + 100000 + (int) (new Random().NextDouble() * 50000);
-						WriteLine(String.Format("{0} {1} ATTEMPTING TO BREAK CONTACT", alienName, k));
+						R[alien] = R[alien] + 100000 + (int) (new Random().NextDouble() * 50000);
+						WriteLine(String.Format("{0} {1} ATTEMPTING TO BREAK CONTACT", alienName, alien));
 						if (new Random().NextDouble() > 0.6)
                         {
 							function725();
 							continue;
                         }
 
-						WriteLine(String.Format("{0} {1} OUT OF SENSOR RANGE- CONTACT BROKEN", alienName, k));
+						WriteLine(String.Format("{0} {1} OUT OF SENSOR RANGE- CONTACT BROKEN", alienName, alien));
 					}
 
-					C[k] = D[k] = 1;
+					C[alien] = D[alien] = 1;
 					D1 = D1 + 1;
 					function725();
 					continue;
 
                 }
 
-				if (R[k] <= 50000)
+				if (R[alien] <= 50000)
 				{
 					if (new Random().NextDouble() > 0.6)
 					{
-						if (R[k] >= 20000)
+						if (R[alien] >= 20000)
 						{
-							function637();
+							function637(alien);
 							continue;
 						}
 					}
@@ -547,7 +695,7 @@ namespace StarChallenge
 
                 if(numberOfAliens > 2)
                 {
-					WriteLine(String.Format("{0} {1} FIRES PHASERS AT ENTERPRISE", alienName, k));
+					WriteLine(String.Format("{0} {1} FIRES PHASERS AT ENTERPRISE", alienName, alien));
 
 					if (!function803())
 					{
@@ -559,19 +707,19 @@ namespace StarChallenge
 
 				if (new Random().NextDouble() < .4)
 				{
-					function637();
+					function637(alien);
 					continue;
 				}
 
-				T[k] = T[k] + 1;
+				T[alien] = T[alien] + 1;
 
-                if (T[k] == 10)
+                if (T[alien] == 10)
                 {
-					function719(k);
+					function719(alien);
 					continue;
                 }
 
-				WriteLine(String.Format("{0} {1} FIRES {2}", alienName, k, pb));
+				WriteLine(String.Format("{0} {1} FIRES {2}", alienName, alien, pb));
 
                 if (!function803())
                 {
@@ -602,7 +750,7 @@ namespace StarChallenge
 			else
 			{
 				WriteLine("HIT TAKEN ON ENTERPRISE");
-				H1 = H1 + 1;
+				hitsTaken = hitsTaken + 1;
 
 				if (ShipDestroyed())
 				{
@@ -619,43 +767,43 @@ namespace StarChallenge
 			WriteLine(String.Format("{0} {1} FIRES ITS LAST {2}", alienName, shipNumber, pb));
 		}
 
-        private void function637()
+        private void function637(int shipNumber)
         {
-			if (H[k] < 6)
+			if (H[shipNumber] < 6)
 			{
-				R[k] = R[k] / 2;
-				WriteLine(String.Format("{0} {1} APPROACHING", alienName, k));
+				R[shipNumber] = R[shipNumber] / 2;
+				WriteLine(String.Format("{0} {1} APPROACHING", alienName, shipNumber));
 				function725();
 				return;
 			}
 
-			if (T[k] == 10)
+			if (T[shipNumber] == 10)
 			{
-				function719(k);
+				function719(shipNumber);
 				return;
 			}
 
-			R[k] = R[k] / 2;
-			WriteLine(String.Format("{0} {1} APPROACHING", alienName, k));
+			R[shipNumber] = R[shipNumber] / 2;
+			WriteLine(String.Format("{0} {1} APPROACHING", alienName, shipNumber));
 			function725();
 			return;
 		}
 
         private bool ShipDestroyed()
         {
-            if(H1 >= 11)
+            if(hitsTaken >= 11)
             {
 				WriteLine("USS ENTERPRISE DESTROYED");
 				D2 = 1;
 				return true;
 			}
-            else if (H1 < 5 )
+            else if (hitsTaken < 5 )
             {
 				WriteLine("SHIELDS HOLDING, NO DAMAGE");
 				function725();
 			}
 
-            switch (H1 - 4)
+            switch (hitsTaken - 4)
             {
 				case 1:
 				case 2:
@@ -683,8 +831,10 @@ namespace StarChallenge
 
         private void function869()
         {
-            throw new NotImplementedException();
-        }
+			WriteLine("USS ENTERPRISE DESTROYED");
+			D2 = 1;
+			function993();
+		}
 
         private void function865()
         {
