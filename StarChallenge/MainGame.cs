@@ -28,7 +28,7 @@ namespace StarChallenge
 
 		//Don't Know yet
 		private float P = 0,  P3 = 1.5f;//P = Power? 
-		private int R1 = 1;
+		private int R1 = 1, B1=0;
 		private int S = 0, M =0, D1= 0, N2 =0,  C1=0; 
 		private int CINT = 0; //C
 		private int RINT = 0; //R
@@ -109,28 +109,25 @@ namespace StarChallenge
 		private void CreateInstrunctions()
         {
 			//Resume at line 00073
+
         }
 
 		private void SetNumberOfEnemies()
 		{
 			PromptForNumberofEnemies();
 
-			if(numberOfAliens > 0 ) // GOTO 121
-            {
-				if (numberOfAliens < 6)//Line 131
-				{
-					WriteLine(String.Format("{0} {1}{2}", numberOfAliens, alienName, numberOfAliens ==1? "S": " ")); //Line 135
-					if(numberOfAliens == 1) { H[1] = -3; }
-				}
-				else
-				{
-					WriteLine(String.Format("THE {0}S ONLY HAVE 5 BATTLE CRUSIERS IN THIS QUADRANT", alienName));
-					numberOfAliens = 5;
-				}
-
-
-				Function143();
+			if (numberOfAliens < 6)//Line 131
+			{	
+				if(numberOfAliens == 1) {S = H[1] = -3; }
 			}
+			else
+			{
+				numberOfAliens = 5;
+			}
+
+			WriteLine(String.Format("{0} {1}{2}", numberOfAliens, alienName, numberOfAliens == 1 ? "S" : " ")); //Line 135
+			Function143();
+			
 		}
 
 		private void PromptForNumberofEnemies() //Line 109
@@ -183,10 +180,10 @@ namespace StarChallenge
 			} while (!ValidUserCommand(firingSolutions));
 
        
-			executeCommand();
+			ExecuteCommand();
 		}
 
-        private void executeCommand()  //Line 189
+        private void ExecuteCommand()  //Line 189
         {
 			bool commandSuceeded = false;
 
@@ -308,6 +305,12 @@ namespace StarChallenge
 
 			commandOption = Math.Abs(commandOption);
 			shipToAttack = Math.Abs(shipToAttack);
+
+			if(commandOption == 0)
+            {
+				function975();
+				return false;
+            }
 
 			if(commandOption > 16 || shipToAttack > numberOfAliens) //line 181 - 183
             {
@@ -443,32 +446,34 @@ namespace StarChallenge
 
         private void function373()
         {
-			throw new NotImplementedException();
+			WriteLine("POWER DIVERTED TO WEAPONS", 1);
 		}
 
 		private void function367()
         {
-			throw new NotImplementedException();
+			WriteLine("POWER DIVERTED TO REPAIRS", 1);
 		}
 
 		private void function377()
         {
-			WriteLine(ca);
-			if (CINT != 1) function381();
-        }
+			if (CINT == 1)
+            {
+				WriteLine(ca);
+			} 
+	
+			function381();
+		}
 
 		private void function381()
         {
 			if(P3 == 2.5)
             {
 				function373();
-				return;
             }
 
 			if(P3 == .5)
             {
 				function367();
-				return;
             }
 
 			PromptForUserInput(); //Line 165
@@ -481,12 +486,12 @@ namespace StarChallenge
 		{
 			WriteLine("SECONDARY DILITHIUM CIRCUIT FUSED");
 			WriteLine("IMPLUSE POWER ONLY - LIMIT 2 MILLION STROMS");
-			WriteLine("WARNING - IF CAPACITY OF IMPULSE ENGINE EXCEEDED IT,");
-			WriteLine("EXPLODE ", 1);
+			WriteLine("WARNING - IF CAPACITY OF IMPULSE ENGINE EXCEEDED IT ");
+			WriteLine("WILL EXPLODE ", 1);
 
 			C1 = 2; // LINE 433
 
-			function443();
+			Function443();
 		}
 
 		private void PrimaryCircuitOverload() //Line 437
@@ -495,39 +500,30 @@ namespace StarChallenge
 			WriteLine("OVERLOAD CAPACITY FOR THIS CIRCUIT IS 10 MILLION STROMS", 1);
 			C1 = 1; // LINE 441
 
-			function443();
+			Function443();
 		}
 
-		private void function443()
+	private void Function443()
         {
 			P = 0;
-			if (commandOption == 5) //Fire Plasma Bolt
-			{
-				function457();
-				return;
-			}
 
-			if (commandOption == 3)
-			{ //Fire Front Phaser
-				function453();
-				return;
-			}
+            switch (commandOption)
+            {
+				case 5:
+                    B1--;
+                    break;
+				case 3:
+                    RINT = RINT - N2;
+                    break;
+				default:
+					FInt = FInt - N2;
+					break;
+            }
 
-			RINT = RINT - N2;
 			PromptForUserInput();
 		}
 
-        private void function453()
-        {
-            throw new NotImplementedException();
-        }
-
-        private void function457()
-        {
-            throw new NotImplementedException();
-        }
-
-        private void function537()
+    private void function537()
         {
 			if(hitsTaken >= 9)
             {
@@ -574,13 +570,13 @@ namespace StarChallenge
                     }
                 }
 
-				EvaluatehitsTaken();
+				EvaluateHitsTaken();
 			}
 
 			function605();
         }
 
-		private void EvaluatehitsTaken()
+		private void EvaluateHitsTaken()
         {
             switch (hitsTaken)
             {
@@ -754,7 +750,7 @@ namespace StarChallenge
 
 				if (ShipDestroyed())
 				{
-					function993();
+					PrintBattleResults();
 					return false;
 				}
 			}
@@ -833,7 +829,7 @@ namespace StarChallenge
         {
 			WriteLine("USS ENTERPRISE DESTROYED");
 			D2 = 1;
-			function993();
+			PrintBattleResults();
 		}
 
         private void function865()
@@ -870,14 +866,37 @@ namespace StarChallenge
 			if(CINT == 1)
             {
 				P = P + 3;
-
-				if(P <= 2) { return; }  // Line 979
-				else if (C1 == 0) { PrimaryCircuitOverload(); }
-				else if (C1 == 1) { SecondaryCircuitOverload(); }
-				else if (C1 == 2 ) { ImpluseOverload(); }
-				return;
             }
 
+            if (C1 == 0)
+			{
+				PrimaryCircuitOverload();
+				return;
+			}
+
+            if (P <= 20) {
+				if(P <= 10)
+                {
+					if(P<= 2)
+                    {
+						function537();
+                    }
+                }
+                else
+                {
+                    if (C1 == 1)
+					{
+						SecondaryCircuitOverload();
+					}
+                }
+				return;
+			}  // Line 979
+
+
+			if (C1 == 2) {
+				ImpluseOverload();
+			}
+            
         }
 
         private void ImpluseOverload() //Line 909
@@ -917,10 +936,10 @@ namespace StarChallenge
 
 			D2 = 1;
 
-			function993();
+			PrintBattleResults();
 		}
 
-        private void function993()
+        private void PrintBattleResults()  //Line993
         {
             throw new NotImplementedException();
         }
