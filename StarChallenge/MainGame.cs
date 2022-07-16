@@ -225,7 +225,12 @@ namespace StarChallenge
 				case 16:
 					function159();
 					break;
+				default:
+					function975();
+					break;
+                    
             }
+
 
             if (!commandSuceeded)
             {
@@ -305,12 +310,6 @@ namespace StarChallenge
 
 			commandOption = Math.Abs(commandOption);
 			shipToAttack = Math.Abs(shipToAttack);
-
-			if(commandOption == 0)
-            {
-				function975();
-				return false;
-            }
 
 			if(commandOption > 16 || shipToAttack > numberOfAliens) //line 181 - 183
             {
@@ -524,19 +523,19 @@ namespace StarChallenge
 		}
 
     private void function537()
+    {
+		if(hitsTaken >= 9)
         {
-			if(hitsTaken >= 9)
-            {
-				P = P - P3 - 0.5f;
-            }
-            else
-            {
+			P = P - P3 - 0.5f;
+        }
+        else
+        {
 
-				P = P - P3;
-			}
-
-			TestForRepairs();
+			P = P - P3;
 		}
+
+		TestForRepairs();
+	}
 
         private void TestForRepairs() //Line 545
         {
@@ -554,20 +553,12 @@ namespace StarChallenge
 
 				if (Z1 > -1)//Line553
 				{
-					hitsTaken = Z1;
+					hitsTaken = -1;
                 }
                 else
                 {
 					hitsTaken = -1;
 					//Line 561
-                }
-
-				if(hitsTaken== 9.5)
-                {
-					if(C1 != 2)
-                    {
-						WriteLine(String.Format("{0} WARP ENGINES REPAIRED", eng),1);
-                    }
                 }
 
 				EvaluateHitsTaken();
@@ -580,8 +571,14 @@ namespace StarChallenge
         {
             switch (hitsTaken)
             {
+				case 9.5f:
+                    if (C1 != 2)
+                    {
+                        WriteLine(String.Format("{0} WARP ENGINES REPAIRED", eng), 1);                 
+                    }
+                    break;
 				case 8.5f:
-                    if (FInt < 20) {
+                    if (FInt < 20 || RINT < 10) {
 						WriteLine(String.Format("{0} {1} PROJECTORS REPAIRED", eng,pt), 1);
 					}
 
@@ -589,11 +586,6 @@ namespace StarChallenge
 					{
 						WriteLine(String.Format("{0} NORMAL POWERS LEVELS RESTORED", eng), 1);
 					}
-                    else
-                    {
-						WriteLine(String.Format("{0} {1} PROJECTORS REPAIRED", eng, pt), 1);
-					}
-
 					break;
 				case 7.5f:
 						WriteLine(String.Format("{0} {1} REPAIRED", eng, pb), 1);
@@ -607,9 +599,11 @@ namespace StarChallenge
             }
         }
 
-		private void function725()
+		private void FurtherRepairsImpossibe()
         {
-			if (DInt < 4 || DInt > 9)
+            D1 = +1;
+
+            if (DInt < 4 || DInt > 9)
 			{
 				return;
 			}
@@ -624,8 +618,7 @@ namespace StarChallenge
 			{
 				if (C[alien] == 1)
 				{
-					D1 = +1;
-					function725();
+					FurtherRepairsImpossibe();
 					continue;
 				}
 
@@ -641,7 +634,7 @@ namespace StarChallenge
 								{
 									R[alien] = R[alien] / 2;
 									WriteLine(String.Format("{0} {1} APPROACHING", alienName, alien));
-									function725();
+									FurtherRepairsImpossibe();
 									continue;
 								}
 							}
@@ -657,22 +650,20 @@ namespace StarChallenge
 
 				if (H[alien] > 5 || F[alien] > 2)
                 {
-                    if (H[alien] >= 7)
+
+					AttemptToBreakContact(alien);
+
+					if (R[alien] < Math.Pow(10, 6))
                     {
-						R[alien] = R[alien] + 100000 + (int) (new Random().NextDouble() * 50000);
-						WriteLine(String.Format("{0} {1} ATTEMPTING TO BREAK CONTACT", alienName, alien));
-						if (new Random().NextDouble() > 0.6)
-                        {
-							function725();
-							continue;
-                        }
+						FurtherRepairsImpossibe();
+						continue;
+                    }
 
-						WriteLine(String.Format("{0} {1} OUT OF SENSOR RANGE- CONTACT BROKEN", alienName, alien));
-					}
-
+					WriteLine(String.Format("{0} {1} OUT OF SENSOR RANGE- CONTACT BROKEN", alienName, alien));
 					C[alien] = D[alien] = 1;
+
 					D1 = D1 + 1;
-					function725();
+					FurtherRepairsImpossibe();
 					continue;
 
                 }
@@ -724,6 +715,20 @@ namespace StarChallenge
 			}
 		}
 
+		private void AttemptToBreakContact(int alien)
+        {
+            if (H[alien] >= 7)
+            {
+                R[alien] = R[alien] + 100000 + (int)(new Random().NextDouble() * 50000);
+            }
+            else
+            {
+                R[alien] = R[alien] + 200000 + (int)(new Random().NextDouble() * 100000);
+            }
+
+            WriteLine(String.Format("{0} {1} ATTEMPTING TO BREAK CONTACT", alienName, alien));
+        }
+
         private bool function803()
         {
 			Double B = new Random().NextDouble();
@@ -733,13 +738,13 @@ namespace StarChallenge
 				if (commandOption > 0)
 				{
 					WriteLine("YOU OUTMANEUVERED ATTACKER, MISS");
-					function725();
+					FurtherRepairsImpossibe();
 					return true;
 				}
 				else
 				{
 					WriteLine("NEAR MISS");
-					function725();
+					FurtherRepairsImpossibe();
 					return true;
 				}
 			}
@@ -769,7 +774,7 @@ namespace StarChallenge
 			{
 				R[shipNumber] = R[shipNumber] / 2;
 				WriteLine(String.Format("{0} {1} APPROACHING", alienName, shipNumber));
-				function725();
+				FurtherRepairsImpossibe();
 				return;
 			}
 
@@ -781,7 +786,7 @@ namespace StarChallenge
 
 			R[shipNumber] = R[shipNumber] / 2;
 			WriteLine(String.Format("{0} {1} APPROACHING", alienName, shipNumber));
-			function725();
+			FurtherRepairsImpossibe();
 			return;
 		}
 
@@ -796,7 +801,7 @@ namespace StarChallenge
             else if (hitsTaken < 5 )
             {
 				WriteLine("SHIELDS HOLDING, NO DAMAGE");
-				function725();
+				FurtherRepairsImpossibe();
 			}
 
             switch (hitsTaken - 4)
@@ -842,7 +847,7 @@ namespace StarChallenge
         {
 			WriteLine("WEAPONS AND SHIELDS DEACTIVATED");
 			WriteLine("SHIPS POWER DROPPING" ,1);
-			function725();
+			FurtherRepairsImpossibe();
 		}
 
         private void function855()
@@ -868,32 +873,31 @@ namespace StarChallenge
 				P = P + 3;
             }
 
-            if (C1 == 0)
-			{
-				PrimaryCircuitOverload();
-				return;
-			}
 
-            if (P <= 20) {
-				if(P <= 10)
+            if (P <= 20)// Line 979
+            {
+                if (P <= 10)
                 {
 					if(P<= 2)
                     {
 						function537();
                     }
                 }
-                else
-                {
-                    if (C1 == 1)
-					{
-						SecondaryCircuitOverload();
-					}
-                }
 				return;
-			}  // Line 979
+			}
 
+            if (C1 == 1)
+            {
+                SecondaryCircuitOverload();
+            }
 
-			if (C1 == 2) {
+            if (C1 == 0)
+            {
+                PrimaryCircuitOverload();
+                return;
+            }
+
+            if (C1 == 2) {
 				ImpluseOverload();
 			}
             
