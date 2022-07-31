@@ -1,16 +1,18 @@
 ﻿<Properties StartupConfiguration="{5D753877-AEB3-4A8D-AC17-FC00AD815ADC}|Default">
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
-      <Breakpoint file="/Users/randycostner/Projects/Star-Challenge/StarChallenge/MainGame.cs" relfile="StarChallenge/MainGame.cs" line="537" column="1" />
+      <Breakpoint file="/Users/randycostner/Projects/Star-Challenge/StarChallenge/MainGame.cs" relfile="StarChallenge/MainGame.cs" line="794" column="1" />
+      <Breakpoint file="/Users/randycostner/Projects/Star-Challenge/StarChallenge/MainGame.cs" relfile="StarChallenge/MainGame.cs" line="797" column="1" />
+      <Breakpoint file="/Users/randycostner/Projects/Star-Challenge/StarChallenge/MainGame.cs" relfile="StarChallenge/MainGame.cs" line="809" column="1" />
+      <Breakpoint file="/Users/randycostner/Projects/Star-Challenge/StarChallenge/MainGame.cs" relfile="StarChallenge/MainGame.cs" line="557" column="1" />
+      <Breakpoint file="/Users/randycostner/Projects/Star-Challenge/StarChallenge/MainGame.cs" relfile="StarChallenge/MainGame.cs" line="347" column="1" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.ItemProperties.StarChallenge PreferredExecutionTarget="MonoDevelop.Default" />
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
-  <MultiItemStartupConfigurations />
   <MonoDevelop.Ide.Workbench ActiveDocument="StarChallenge/MainGame.cs">
     <Files>
-      <File FileName="StarChallenge/MainGame.cs" Line="603" Column="16" />
+      <File FileName="StarChallenge/MainGame.cs" Line="890" Column="9" />
+      <File FileName="StarChallenge/Program.cs" Line="1" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -29,4 +31,7 @@
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.ItemProperties.StarChallenge PreferredExecutionTarget="MonoDevelop.Default" />
+  <MultiItemStartupConfigurations />
 </Properties>

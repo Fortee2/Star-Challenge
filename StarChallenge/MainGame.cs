@@ -6,19 +6,17 @@ namespace StarChallenge
 {
 	public class MainGame
 	{
-		//Think the orignal arrays are base 1
-		//May need to bump these up to 6 or sub one off of the index
-		private int[] C = new int[6]; //ATTACKING SHIPS
+		private int[] _enemyShips = new int[6]; //ATTACKING SHIPS C[]
 		private int[] H = new int[6];
 		private int[] D = new int[6];
 		private int[] F = new int[6];
-		private int[] R = new int[6];
-		private int[] T = new int[6]; //ENEMY PHASER BANK
-		private int[] A = new int[6];
+		private int[] _enemyDistance = new int[6]; //ENEMY Distance kilometers R[]
+		private int[] _enemyPhotonTorpedos = new int[6]; //ENEMY PHASER BANK T[]
+		private int[] _enemyDirection = new int[6]; //Enemy direction in degrees A[]
 
 		//Messages
 		private string pb = "PHASER BANKS"; //B$,
-		private string ca = "CLOAK ACTIVATED**"; //C$
+		private readonly string _cloakActivated = "CLOAK ACTIVATED**"; //C$
         private string alienName = "KLINGON"; //K$
 		private string eng = "ENGINEERING REPORTS"; //E$
 		private string pt = "PHOTON TOREPEDOES"; //P$
@@ -28,19 +26,19 @@ namespace StarChallenge
 
 		//Don't Know yet
 		private float P = 0,  P3 = 1.5f;//P = Power? 
-		private int R1 = 1, B1=0;
+		private int R1 = 1, B1=0, B2=0, H1-0;
 		private int S = 0, M =0, D1= 0, N2 =0,  C1=0; 
-		private int CINT = 0; //C
-		private int RINT = 0; //R
+		private int CINT = 0; //C  Toggle if Cloak is activate?
+		private int RINT = 0; //R  Radius
 		private int DInt = 0; //D
 		private int FInt = 0; //F
-		private int Q = new Random(0).Next();
+		private int Q = new Random(0).Next();  //Quadrant
 
 		//Converted
-		private int commandOption = 0; //M1
-		private int shipToAttack = 0; //K
-		private int numberOfAliens = 0; //N1
-		private float hitsTaken = 0; //hitsTaken
+		private int _commandOption = 0; //M1
+		private int _shipToAttack = 0; //K
+		private int _numberOfAliens = 0; //N1
+		private float _hitsTaken = 0; //hitsTaken
 
         public int D2 { get; private set; }
 
@@ -102,13 +100,13 @@ namespace StarChallenge
 				do
 				{
 					PromptForUserInput();
-				} while (hitsTaken < 11);
+				} while (_hitsTaken < 11);
 			}
 		}
 
 		private void CreateInstrunctions()
         {
-			//Resume at line 00073
+			//TODO:Resume at line 00073
 
         }
 
@@ -116,16 +114,16 @@ namespace StarChallenge
 		{
 			PromptForNumberofEnemies();
 
-			if (numberOfAliens < 6)//Line 131
+			if (_numberOfAliens < 6)//Line 131
 			{	
-				if(numberOfAliens == 1) {S = H[1] = -3; }
+				if(_numberOfAliens == 1) {S = H[1] = -3; }
 			}
 			else
 			{
-				numberOfAliens = 5;
+				_numberOfAliens = 5;
 			}
 
-			WriteLine(String.Format("{0} {1}{2}", numberOfAliens, alienName, numberOfAliens == 1 ? "S" : " ")); //Line 135
+			WriteLine(String.Format("{0} {1}{2}", _numberOfAliens, alienName, _numberOfAliens == 1 ? "S" : " ")); //Line 135
 			Function143();
 			
 		}
@@ -136,37 +134,41 @@ namespace StarChallenge
 			{
 				WriteLine("HOW MANY KLINGONS DO YOU WANT TO TAKE ON?", 1);
 				string? count = Console.ReadLine();
-				int test;
 
-				if (count != null && int.TryParse(count, out test))
-				{
-					numberOfAliens = Math.Abs(test);
-				}
+                if (count != null && int.TryParse(count, out int test))
+                {
+                    _numberOfAliens = Math.Abs(test);
+                }
 
-			} while (numberOfAliens == 0 );
+            } while (_numberOfAliens == 0 );
 		}
 
 		private void Function143()
         {
-			WriteLine("COMING INTO RANGE - SHIELDS ON", 1);
+            WriteLine("COMING INTO RANGE - SHIELDS ON", 1);
 
-			for(int i = 1; i<= numberOfAliens; i++)
-            {
-				R[i] = 40000 + (int) (new Random().Next(1,20001));
-				A[i] = (int) new Random().Next(1, 361); //360 * new Random(1).Next();
+            PrintEnemyRange();
 
-				WriteLine(String.Format("RANGE OF {0}-{1} = {2} KM.AT {3} DEGREES", alienName, i, R[i], A[i]));
-            }
+            S = 0;
+            P3 = 1.5f;
+            R1 = 1;
 
-			S = 0;
-			P3 = 1.5f;
-			R1 = 1;
-
-			//goto 377
-			function377();
+            //goto 377
+            function377();
         }
 
-		private void PromptForUserInput() // Line 167
+        private void PrintEnemyRange()
+        {
+            for (int i = 1; i <= _numberOfAliens; i++)
+            {
+                _enemyDistance[i] = 40000 + (int)(new Random().Next(1, 20001));
+                _enemyDirection[i] = (int)new Random().Next(1, 361); //360 * new Random(1).Next();
+
+                WriteLine(String.Format("RANGE OF {0}-{1} = {2} KM AT {3} DEGREES", alienName, i, _enemyDistance[i], _enemyDirection[i]));
+            }
+        }
+
+        private void PromptForUserInput() // Line 167
         {
 			string? firingSolutions;
 
@@ -187,7 +189,7 @@ namespace StarChallenge
         {
 			bool commandSuceeded = false;
 
-            switch (commandOption)
+            switch (_commandOption)
             {
 				case 1:
 				case 2:
@@ -280,7 +282,7 @@ namespace StarChallenge
 
         private bool firePhasers() //Line 231
         {
-            if (C[shipToAttack] == 1)
+            if (_enemyShips[_shipToAttack] == 1)
             {
 				MoveImpossible();
 				return false;
@@ -302,16 +304,16 @@ namespace StarChallenge
 			string[] commands = userInput.Split(",");
 
 			if (commands.GetLength(0) != 2
-				|| !int.TryParse(commands[1], out shipToAttack)
-				|| !int.TryParse(commands[0], out commandOption))
+				|| !int.TryParse(commands[1], out _shipToAttack)
+				|| !int.TryParse(commands[0], out _commandOption))
 			{
 				return false;
 			}
 
-			commandOption = Math.Abs(commandOption);
-			shipToAttack = Math.Abs(shipToAttack);
+			_commandOption = Math.Abs(_commandOption);
+			_shipToAttack = Math.Abs(_shipToAttack);
 
-			if(commandOption > 16 || shipToAttack > numberOfAliens) //line 181 - 183
+			if(_commandOption > 16 || _shipToAttack > _numberOfAliens) //line 181 - 183
             {
 				MoveImpossible();
 				return false;
@@ -332,28 +334,16 @@ namespace StarChallenge
 
 		private void function233()
         {
-			switch (commandOption) //Line 233
+			switch (_commandOption) //Line 233
 			{
 				case 1:  //Line 235
-                    if (R[shipToAttack] > 300000)
+                    if (_enemyDistance[_shipToAttack] > 300000 || _enemyDirection[_shipToAttack] > 180 || _hitsTaken >= 8)
                     {
 						MoveImpossible();
 						return;
                     }
 
-                    if (A[shipToAttack] > 180)
-                    {
-						MoveImpossible();
-						return;
-                    }
-
-					if(hitsTaken >= 8)
-                    {
-						MoveImpossible();
-						return;
-                    }
-
-					float N3 = 2 / commandOption;
+					float N3 = 2 / _commandOption;
 					P = P + N3;
 					function975();
 					break;
@@ -443,12 +433,12 @@ namespace StarChallenge
             throw new NotImplementedException();
         }
 
-        private void function373()
+        private void PowerToWeapons()
         {
 			WriteLine("POWER DIVERTED TO WEAPONS", 1);
 		}
 
-		private void function367()
+		private void PowerToRepairs()
         {
 			WriteLine("POWER DIVERTED TO REPAIRS", 1);
 		}
@@ -457,7 +447,7 @@ namespace StarChallenge
         {
 			if (CINT == 1)
             {
-				WriteLine(ca);
+				WriteLine(_cloakActivated);
 			} 
 	
 			function381();
@@ -467,18 +457,18 @@ namespace StarChallenge
         {
 			if(P3 == 2.5)
             {
-				function373();
+				PowerToWeapons();
             }
 
 			if(P3 == .5)
             {
-				function367();
+				PowerToRepairs();
             }
 
 			PromptForUserInput(); //Line 165
 
 			function975();  
-			function537();  
+			//function537();  
 		}
 
 		private void SecondaryCircuitOverload()
@@ -502,11 +492,11 @@ namespace StarChallenge
 			Function443();
 		}
 
-	private void Function443()
+		private void Function443()
         {
 			P = 0;
 
-            switch (commandOption)
+            switch (_commandOption)
             {
 				case 5:
                     B1--;
@@ -522,20 +512,20 @@ namespace StarChallenge
 			PromptForUserInput();
 		}
 
-    private void function537()
-    {
-		if(hitsTaken >= 9)
-        {
-			P = P - P3 - 0.5f;
-        }
-        else
-        {
+		private void function537()
+		{
+			if(_hitsTaken >= 9)
+			{
+				P = P - P3 - 0.5f;
+			}
+			else
+			{
 
-			P = P - P3;
+				P = P - P3;
+			}
+
+			TestForRepairs();
 		}
-
-		TestForRepairs();
-	}
 
         private void TestForRepairs() //Line 545
         {
@@ -549,15 +539,15 @@ namespace StarChallenge
 
 			for (int i = 0; i < R1; i++)
 			{
-				Z1 = hitsTaken - .5f;
+				Z1 = _hitsTaken - .5f;
 
 				if (Z1 > -1)//Line553
 				{
-					hitsTaken = -1;
+					_hitsTaken = -1;
                 }
                 else
                 {
-					hitsTaken = -1;
+					_hitsTaken = -1;
 					//Line 561
                 }
 
@@ -569,7 +559,7 @@ namespace StarChallenge
 
 		private void EvaluateHitsTaken()
         {
-            switch (hitsTaken)
+            switch (_hitsTaken)
             {
 				case 9.5f:
                     if (C1 != 2)
@@ -601,8 +591,6 @@ namespace StarChallenge
 
 		private void FurtherRepairsImpossibe()
         {
-            D1 = +1;
-
             if (DInt < 4 || DInt > 9)
 			{
 				return;
@@ -614,128 +602,231 @@ namespace StarChallenge
 
         private void function605()
         {
-			for (int alien = 1; alien < numberOfAliens; alien++)
+			for (int alien = 1; alien <= _numberOfAliens; alien++)
 			{
-				if (C[alien] == 1)
+				if (_enemyShips[alien] == 1)
 				{
-					FurtherRepairsImpossibe();
+                    D1 = +1;
+                    FurtherRepairsImpossibe();
 					continue;
 				}
 
-				if (CINT == 0)
+				if (CINT != 0)
 				{
-					if (R[alien] <= 500000)
-					{
-						if (R[alien] >= 100000)
-						{
-							if (R[alien] >= 20000)
-							{
-								if (H[alien] < 6)
-								{
-									R[alien] = R[alien] / 2;
-									WriteLine(String.Format("{0} {1} APPROACHING", alienName, alien));
-									FurtherRepairsImpossibe();
-									continue;
-								}
-							}
-						}
-					}
-				}
-
-				if (commandOption == 0)
-				{
-					WriteLine(String.Format("{0} {1} DOING NOTHING", alienName, alien));
-					continue;
-				}
-
-				if (H[alien] > 5 || F[alien] > 2)
-                {
-
-					AttemptToBreakContact(alien);
-
-					if (R[alien] < Math.Pow(10, 6))
+                    if (_commandOption == 0)
                     {
-						FurtherRepairsImpossibe();
-						continue;
+                        WriteLine(String.Format("{0} {1} DOING NOTHING", alienName, alien));
+                        continue;
                     }
 
-					WriteLine(String.Format("{0} {1} OUT OF SENSOR RANGE- CONTACT BROKEN", alienName, alien));
-					C[alien] = D[alien] = 1;
+                    if (H[alien] > 5 || F[alien] > 2)
+                    {
+                        AttemptToBreakContact(alien);
 
-					D1 = D1 + 1;
-					FurtherRepairsImpossibe();
-					continue;
+                        if (_enemyDistance[alien] < Math.Pow(10, 6))
+                        {
+                            FurtherRepairsImpossibe();
+                            continue;
+                        }
 
+                        WriteLine(String.Format("{0} {1} OUT OF SENSOR RANGE- CONTACT BROKEN", alienName, alien));
+                        _enemyShips[alien] = D[alien] = 1;
+
+                        FurtherRepairsImpossibe();
+                        continue;
+
+                    }
                 }
 
-				if (R[alien] <= 50000)
-				{
-					if (new Random().NextDouble() > 0.6)
-					{
-						if (R[alien] >= 20000)
-						{
-							function637(alien);
-							continue;
-						}
-					}
-				}
-
-                if(numberOfAliens > 2)
-                {
-					WriteLine(String.Format("{0} {1} FIRES PHASERS AT ENTERPRISE", alienName, alien));
-
-					if (!function803())
-					{
-						break;
-					}
-
-					continue;
-                }
-
-				if (new Random().NextDouble() < .4)
-				{
-					function637(alien);
-					continue;
-				}
-
-				T[alien] = T[alien] + 1;
-
-                if (T[alien] == 10)
-                {
-					function719(alien);
-					continue;
-                }
-
-				WriteLine(String.Format("{0} {1} FIRES {2}", alienName, alien, pb));
-
-                if (!function803())
-                {
-					break;
-                }
+				DetermineAlienAction(alien);
 			}
 		}
 
-		private void AttemptToBreakContact(int alien)
+        private void DetermineAlienAction(int alien)
+        {
+            if (_enemyDistance[alien] <= 500000)
+            {
+				DetermineAlienAction10K(alien);
+            }
+
+            if (H[alien] < 7)
+            {
+                if (H[alien] < 6)
+                {
+                    AlienApproaching(alien);
+                    return;
+                }
+            }
+        }
+
+        private void DetermineAlienAction10K(int alien)
+        {
+            if (_enemyDistance[alien] >= 100000)
+            {
+                DetermineAlienAction20Gtr6K(alien);
+				return;
+			}
+
+            if (H[alien] >= 7)
+            {
+                AttemptToBreakContact(alien);
+                return;
+            }
+        }
+
+        private void DetermineAlienAction20Gtr6K(int alien)
+        {
+            if (_enemyDistance[alien] >= 20000)
+            {
+				DetermineAlienAction30K(alien);
+
+                if (H[alien] > 6)
+                {
+                    AttemptToBreakContact(alien);
+                    return;
+                }
+            }
+        }
+
+        private void DetermineAlienAction30K(int alien)
+        {
+            if (_enemyDistance[alien] >= 30000)
+            {
+				DetermineAlienAction20K(alien);
+				return;
+            }
+
+			Function669(alien);
+        }
+
+        private void DetermineAlienAction20K(int alien)
+        {
+            if (_enemyDistance[alien] >= 20000)
+            {
+                if (H[alien] < 6)
+                {
+                    AlienApproaching(alien);
+                    return;
+                }
+
+            }
+
+            if (_enemyPhotonTorpedos[alien] < 10)
+            {
+				//TODO: Need to break loop if ship destoryed
+				AlienFireTorepedos(alien);
+
+            }
+        }
+
+        private bool AlienFireTorepedos(int alien)
+        {
+			bool shipDestroyed = false;
+
+
+			return shipDestroyed;
+        }
+
+        private void Function669(int alien)
+        {
+            if (H[alien] < 6)
+            {
+                if (_numberOfAliens > 2)
+                {
+                    if (AlienFiresPhasers(alien)) break;
+                    return;
+                }
+
+                if (new Random().NextDouble() < .7)
+                {
+                    if (B2 == 10 || _enemyDistance[alien] < 100000)
+                    {
+                        if (AlienFiresPhasers(alien)) break;
+                    }
+
+                    B2 = B2 + 1;
+
+                    if (B2 == 10)
+                    {
+                        WriteLine(String.Format("{0} {1} LAUNCHES ITS LAST {2}", alienName, alien, hepb));
+                    }
+                    else
+                    {
+                        WriteLine(String.Format("{0} {1} LAUNCHES {2}", alienName, alien, hepb));
+                    }
+
+                    //TODO: LINE 691 CODE TO CALCULATE DAMAGE
+                    Function691(alien);
+                    return;
+                }
+            }
+        }
+
+        private void Function691(int alien)
+        {
+			double B = new Random().NextDouble();
+
+			if(B > 0.7 + CINT * 0.3)
+            {
+				H1 = H1 + 1;
+                WriteLine("HIT ON THE USS ENTERPRISE", 0);
+                H1 = H1 + 1;
+                //TODO: LINE 833
+            }
+
+            if (B > 0.7 + CINT * 0.4)
+            {
+                H1 = H1 + 2;
+                WriteLine("DIRECT HIT ON THE USS ENTERPRISE", 0);
+                H1 = H1 + 2;
+				//TODO: LINE 833
+            }
+
+			//TODO: Line 811
+        }
+
+        private bool AlienFiresPhasers(int alien)
+        {
+            //TODO: Need to break loop if ship destoryed
+            WriteLine(String.Format("{0} {1} FIRES PHASERS AT ENTERPRISE", alienName, alien));
+
+            if (!AlienEngagment()) 
+            {
+				return true;  //desttroyed enterpise need to signal back to stop battle
+            }
+
+			return false;
+        }
+
+        private void AlienApproaching(int alien)
+        {
+            _enemyDistance[alien] = _enemyDistance[alien] / 2;
+            WriteLine(String.Format("{0} {1} APPROACHING", alienName, alien));
+            PrintEnemyRange();
+            FurtherRepairsImpossibe();
+        }
+
+        private void AttemptToBreakContact(int alien)
         {
             if (H[alien] >= 7)
             {
-                R[alien] = R[alien] + 100000 + (int)(new Random().NextDouble() * 50000);
+                _enemyDistance[alien] = _enemyDistance[alien] + 100000 + (int)(new Random().NextDouble() * 50000);
             }
             else
             {
-                R[alien] = R[alien] + 200000 + (int)(new Random().NextDouble() * 100000);
+                _enemyDistance[alien] = _enemyDistance[alien] + 200000 + (int)(new Random().NextDouble() * 100000);
             }
 
             WriteLine(String.Format("{0} {1} ATTEMPTING TO BREAK CONTACT", alienName, alien));
         }
 
-        private bool function803()
+        private bool AlienEngagment()
         {
 			Double B = new Random().NextDouble();
 
 			if (B > .3)
 			{
-				if (commandOption > 0)
+				if (_commandOption > 0)
 				{
 					WriteLine("YOU OUTMANEUVERED ATTACKER, MISS");
 					FurtherRepairsImpossibe();
@@ -751,7 +842,7 @@ namespace StarChallenge
 			else
 			{
 				WriteLine("HIT TAKEN ON ENTERPRISE");
-				hitsTaken = hitsTaken + 1;
+				_hitsTaken = _hitsTaken + 1;
 
 				if (ShipDestroyed())
 				{
@@ -772,19 +863,19 @@ namespace StarChallenge
         {
 			if (H[shipNumber] < 6)
 			{
-				R[shipNumber] = R[shipNumber] / 2;
+				_enemyDistance[shipNumber] = _enemyDistance[shipNumber] / 2;
 				WriteLine(String.Format("{0} {1} APPROACHING", alienName, shipNumber));
 				FurtherRepairsImpossibe();
 				return;
 			}
 
-			if (T[shipNumber] == 10)
+			if (_enemyPhotonTorpedos[shipNumber] == 10)
 			{
 				function719(shipNumber);
 				return;
 			}
 
-			R[shipNumber] = R[shipNumber] / 2;
+			_enemyDistance[shipNumber] = _enemyDistance[shipNumber] / 2;
 			WriteLine(String.Format("{0} {1} APPROACHING", alienName, shipNumber));
 			FurtherRepairsImpossibe();
 			return;
@@ -792,19 +883,19 @@ namespace StarChallenge
 
         private bool ShipDestroyed()
         {
-            if(hitsTaken >= 11)
+            if(_hitsTaken >= 11)
             {
 				WriteLine("USS ENTERPRISE DESTROYED");
 				D2 = 1;
 				return true;
 			}
-            else if (hitsTaken < 5 )
+            else if (_hitsTaken < 5 )
             {
 				WriteLine("SHIELDS HOLDING, NO DAMAGE");
 				FurtherRepairsImpossibe();
 			}
 
-            switch (hitsTaken - 4)
+            switch (_hitsTaken - 4)
             {
 				case 1:
 				case 2:
@@ -907,17 +998,17 @@ namespace StarChallenge
         {
 			WriteLine("IMPULSE ENGINE OVERLOAD", 1);
 
-			function877();
+			CalculateBlastRadius();
 		}
 
-        private void function877()
+        private void CalculateBlastRadius()
         {
 			R1 = 9800 * new Random().Next() + 200;
 			WriteLine(String.Format("RADIUS OF EXPLOSION = {0} KM", R1), 1);
 
-			for(int i = 1; i < numberOfAliens + 1; i++)
+			for(int i = 1; i < _numberOfAliens + 1; i++)
             {
-                if (C[i]==1 || R[i] > R1)
+                if (_enemyShips[i]==1 || _enemyDistance[i] > R1)
                 {
 					continue;
                 }
@@ -935,7 +1026,7 @@ namespace StarChallenge
 
 				WriteLine(String.Format("{0} {1} DESTROYED", alienName, i));
 
-				C[i] = 1;
+				_enemyShips[i] = 1;
             }
 
 			D2 = 1;
@@ -965,7 +1056,16 @@ namespace StarChallenge
 
         private void WriteLine(string text, int blankLinesAfter = 0 )
         {
-			Console.WriteLine(text);
+			char[] chars = text.ToCharArray();
+
+			foreach(char c in chars)
+            {
+				Console.Write(c);
+				Thread.Sleep(100);
+            }
+
+			Console.Write("\n");
+			//Console.WriteLine(text);
 
 			for(int i = 0; i < blankLinesAfter; i++)
             {
